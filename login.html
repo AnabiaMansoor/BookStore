@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="login-box" class="w-25 m-4">
+        <div class="left">
+            <h1>Login</h1>
+            <!-- <input type="text" id="username" name="username" placeholder="username"> -->
+            <div class="form-floating mb-3">
+            <input type="text" id="email"   class="form-control" name="email" placeholder="Email">
+            <label for="floatingInput">Email</label>
+        </div>
+            <div class="form-floating mb-3">
+            <input type="password" id="password"  class="form-control"  name="password" placeholder="password">
+            <label for="floatingInput">Password</label>
+        </div>
+          
+            <input type="button" id="login" class="btn btn-primary"   name="login" value="Login">
+        <a href="Signup.html" class="btn btn-primary ">Sign up</a>
+        <a href="../OnlineBookStore/Addtocart.html"></a>
+</body>
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+    import { getDatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+
+    //   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-analytics.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCkxJvCwPchL0N5KaJdaV2udJEOA3EG39g",
+        authDomain: "registerationfrom.firebaseapp.com",
+        databaseURL: "https://registerationfrom-default-rtdb.firebaseio.com",
+        projectId: "registerationfrom",
+        storageBucket: "registerationfrom.appspot.com",
+        messagingSenderId: "16280565496",
+        appId: "1:16280565496:web:b0709b2fc03761f8d96d0d",
+        measurementId: "G-XP7NJ21X2P"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    //  const analytics = getAnalytics(app);
+    const database = getDatabase(app);
+    const auth = getAuth();
+
+    login.addEventListener('click', (e) => {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+
+                const dt = new Date();
+                update(ref(database, 'users/' + user.uid), {
+                    last_login: dt,
+                });
+                alert('User Logged in!');
+
+                window.location.replace('Addtocart.html');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage);
+            });
+    });
+
+    const user = auth.currentUser;
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+
+            const uid = user.uid;
+            // ...
+        } else {
+            // User is signed out
+            // ...
+
+        }
+    });
+    logout.addEventListener('click', (e) => {
+        const auth = getAuth();
+        signOut(auth).then(() => {
+           alert("User Logged Out")
+        }).catch((error) => {
+            const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage);
+        });
+    })
+</script>
+</body>
+</html>
